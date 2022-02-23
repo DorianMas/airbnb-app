@@ -48,21 +48,17 @@ const HomeScreen = ({ token }) => {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
           return (
-            <View>
-              <Text style={styles.title}>{item.title}</Text>
+            <View style={styles.offerContainer}>
+              <Text>
+                <Text style={styles.title}>{item.title}</Text>;
+                <Text style={styles.price}>{item.price}</Text>
+                <Text style={styles.reviews}>{item.reviews} reviews</Text>
+              </Text>
               <Image
-                style={styles.picture}
-                source={
-                  // <FlatList
-                  //   data={item.photos}
-                  //   keyExtractor={item.photos.index}
-                  //   renderItem={(picture) => {
-                  //     <Image source={picture.url[0]} />;
-                    }
-                
-                
+                style={styles.illustration}
+                source={item.user.account.photo.url}
               />
-              ;
+              <Image style={styles.avatar} source={item.photos[0]} />
             </View>
           );
         }}
@@ -89,10 +85,10 @@ const styles = StyleSheet.create({
     height: 50,
   },
   title: {
-    backgroundColor: "blue",
     height: 400,
     width: 500,
   },
+  offerContainer: { width: 250, height: 200 },
 });
 
 export default HomeScreen;
