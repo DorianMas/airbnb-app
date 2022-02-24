@@ -11,17 +11,19 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
   FlatList,
 } from "react-native";
 
+import { Entypo } from "@expo/vector-icons";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+
 const RoomScreen = ({ route }) => {
-  console.log("undefined =>", props.route);
+  console.log("Objet =>", route);
 
   const [data, setData] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
-
-  // console.log(id);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,15 +42,121 @@ const RoomScreen = ({ route }) => {
     console.log("Effect executed");
   }, []);
 
+  /* Fonction pour afficher le nombre d'étoiles*/
+  const generateStars = (numberOfStars) => {
+    let starsArrays = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < numberOfStars) {
+        starsArrays.push(
+          <Entypo name="star" size={22} color="#DAA520" key={i} />
+        );
+      } else {
+        starsArrays.push(<Entypo name="star" size={22} color="grey" key={i} />);
+      }
+    }
+    return starsArrays;
+  };
+
+  // Création des coordonnées de la Map
+  const markers = [
+    {
+      id: data._id,
+      latitude: data.location[0],
+      longitude: data.location[1],
+      title: data.title,
+      description: data.description,
+    },
+  ];
+
   return isLoading === true ? (
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
-    <ScrollView>
-      <View>
-        <Text>Test</Text>
+    <View style={styles.offerContainer}>
+      <Image style={styles.illustration} source={{ uri: data.photos[0].url }} />
+      <Text style={styles.price}>{data.price} €</Text>
+      <View style={styles.offerDetails}>
+        <View style={styles.offerDetailsLeft}>
+          <Text numberOfLines={1} style={styles.title}>
+            {data.title}
+          </Text>
+          <View style={styles.reviewsContainer}>
+            <View style={styles.row}>{generateStars(data.ratingValue)}</View>
+            <Text>{data.reviews} reviews</Text>
+          </View>
+        </View>
+        <Image
+          style={styles.avatar}
+          source={{ uri: data.user.account.photo.url }}
+        />
       </View>
-    </ScrollView>
+      <Text style={styles.description} numberOfLines={3}>
+        {data.description}
+      </Text>
+      <MapView
+        // La MapView doit obligatoirement avoir des dimensions
+        style={{ flex: 1 }}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={{
+          latitude: data.location[0],
+          longitude: data.location[1],
+          latitudeDelta: 0.2,
+          longitudeDelta: 0.2,
+        }}
+        showsUserLocation={true}
+      >
+        {markers.map((marker) => {
+          return (
+            <MapView.Marker
+              key={marker.id}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              title={marker.title}
+              description={marker.description}
+            />
+          );
+        })}
+      </MapView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  offerContainer: { flex: 1 },
+  illustration: {
+    width: Dimensions.get("window").width,
+    height: 200,
+    marginTop: 5,
+  },
+
+  price: {
+    backgroundColor: "black",
+    color: "white",
+    width: 50,
+    padding: 5,
+    textAlign: "center",
+    marginBottom: 10,
+    position: "absolute",
+    top: 170,
+  },
+  title: {
+    paddingVertical: 10,
+    fontWeight: "bold",
+  },
+  offerDetails: { flexDirection: "row", justifyContent: "space-between" },
+  row: { flexDirection: "row" },
+  offerDetailsLeft: { flex: 4, marginRight: 5 },
+  reviewsContainer: { flexDirection: "row", alignItems: "center" },
+  reviews: { color: "grey" },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    marginTop: 5,
+    marginRight: 5,
+  },
+  description: { marginVertical: 10 },
+});
 
 export default RoomScreen;
