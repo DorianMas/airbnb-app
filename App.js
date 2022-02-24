@@ -10,6 +10,8 @@ import SignInScreen from "./containers/SignInScreen";
 import SignUpScreen from "./containers/SignUpScreen";
 import SettingsScreen from "./containers/SettingsScreen";
 import SplashScreen from "./containers/SplashScreen";
+import RoomScreen from "./containers/RoomScreen";
+import { ImageBackground } from "react-native-web";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -24,7 +26,6 @@ export default function App() {
     } else {
       await AsyncStorage.removeItem("userToken");
     }
-
     setUserToken(token);
   };
 
@@ -92,7 +93,7 @@ export default function App() {
                           headerTitleStyle: { color: "white" },
                         }}
                       >
-                        {() => <HomeScreen />}
+                        {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
                       <Stack.Screen
@@ -103,6 +104,8 @@ export default function App() {
                       >
                         {() => <ProfileScreen />}
                       </Stack.Screen>
+
+                      <Stack.Screen name="Room" component={RoomScreen} />
                     </Stack.Navigator>
                   )}
                 </Tab.Screen>
