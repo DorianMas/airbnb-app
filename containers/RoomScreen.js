@@ -32,6 +32,7 @@ const RoomScreen = ({ route }) => {
           `https://express-airbnb-api.herokuapp.com/rooms/${route.params.id}`
         );
         setData(response.data);
+        console.log(response.data);
         setIsLoading(false);
       } catch (error) {
         console.log(error.response.status);
@@ -58,15 +59,15 @@ const RoomScreen = ({ route }) => {
   };
 
   // Création des coordonnées de la Map
-  const markers = [
-    {
-      id: data._id,
-      latitude: data.location[0],
-      longitude: data.location[1],
-      title: data.title,
-      description: data.description,
-    },
-  ];
+  // const markers = [
+  //   {
+  //     id: data._id,
+  //     latitude: data.location[0],
+  //     longitude: data.location[1],
+  //     title: data.title,
+  //     description: data.description,
+  //   },
+  // ];
 
   return isLoading === true ? (
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
