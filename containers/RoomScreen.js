@@ -103,6 +103,8 @@ const RoomScreen = ({ route }) => {
           longitudeDelta: 0.2,
         }}
         showsUserLocation={true}
+        title={data.title}
+        description={data.description}
       >
         {markers.map((marker) => {
           return (
