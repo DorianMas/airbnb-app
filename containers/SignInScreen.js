@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 
-export default function SignInScreen({ setToken }) {
+export default function SignInScreen({ setToken, setId }) {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -40,6 +40,8 @@ export default function SignInScreen({ setToken }) {
         );
         console.log(response.data);
         setToken(response.data.token);
+        //Enregistrer l'id pour l'utiliser sur la page Profile
+        setId(response.data.id);
       } else {
         setError("Please fill all fields");
       }

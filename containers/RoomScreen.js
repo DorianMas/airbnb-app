@@ -98,28 +98,22 @@ const RoomScreen = ({ route }) => {
         style={{ flex: 1 }}
         provider={PROVIDER_GOOGLE}
         initialRegion={{
-          latitude: data.location[0],
-          longitude: data.location[1],
-          latitudeDelta: 0.2,
-          longitudeDelta: 0.2,
+          latitude: data.location[1],
+          longitude: data.location[0],
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
         }}
         showsUserLocation={true}
-        title={data.title}
-        description={data.description}
       >
-        {markers.map((marker) => {
-          return (
-            <MapView.Marker
-              key={marker.id}
-              coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              }}
-              title={marker.title}
-              description={marker.description}
-            />
-          );
-        })}
+        <MapView.Marker
+          key={data._id}
+          coordinate={{
+            latitude: data.location[1],
+            longitude: data.location[0],
+          }}
+          title={data.title}
+          description={data.description}
+        />
       </MapView>
     </View>
   );
