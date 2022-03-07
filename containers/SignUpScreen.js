@@ -43,6 +43,12 @@ export default function SignUpScreen({ setToken }) {
           );
           console.log(response.data);
           setToken(response.data.token);
+
+          const userId = JSON.stringify(response.data.id);
+
+          // console.log(response.data.id);
+
+          await AsyncStorage.setItem("userId", userId);
         } else {
           setError("Les 2 MDP ne sont pas identiques !");
         }
