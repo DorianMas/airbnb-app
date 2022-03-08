@@ -5,37 +5,49 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ActivityIndicator, TextInput } from "react-native-web";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Person from "../assets/person-icon.png";
 import { MaterialIcons } from "@expo/vector-icons";
 
-export default function ProfileScreen({ setToken, userId, userToken }) {
+export default function ProfileScreen({ userId, userToken, setToken }) {
   const [user, setUser] = useState({});
   const [email, setEmail] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log(userId);
+  console.log(userToken);
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(
-        `https://express-airbnb-api.herokuapp.com/user/${userId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + userToken,
-          },
-        }
-      );
-      setUser(response.data);
-      setIsLoading(false);
+      try {
+        const response = await axios.get(
+          `https://express-airbnb-api.herokuapp.com/user/${userId}`,
+          {
+            headers: {
+              Authorization: "Bearer " + userToken,
+            },
+          }
+        );
+        setIsLoading(false);
+        S;
+        setUser(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.log(error.message);
+      }
+
       // console.log("les informations retournées par axios => ", response.data);
       // console.log("Objet à l'intérieur de User =>", user);
     };
+
     fetchData();
   }, []);
 

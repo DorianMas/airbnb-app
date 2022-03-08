@@ -109,15 +109,6 @@ export default function App() {
                         {(props) => <HomeScreen {...props} />}
                       </Stack.Screen>
 
-                      <Stack.Screen
-                        name="Profile"
-                        options={{
-                          title: "User Profile",
-                        }}
-                      >
-                        {() => <ProfileScreen />}
-                      </Stack.Screen>
-
                       <Stack.Screen name="Room" component={RoomScreen} />
                     </Stack.Navigator>
                   )}
@@ -147,7 +138,7 @@ export default function App() {
                   )}
                 </Tab.Screen>
                 <Tab.Screen
-                  name="TabProfile"
+                  name="Profile"
                   options={{
                     tabBarIcon: ({ color, size }) => (
                       <Ionicons name={"ios-person"} size={size} color={color} />
@@ -157,17 +148,18 @@ export default function App() {
                   {() => (
                     <Stack.Navigator>
                       <Stack.Screen
-                        name="Profile"
+                        name="ProfileTest"
                         options={{
                           title: "Profile",
                           tabBarLabel: "Profile",
                         }}
                       >
-                        {() => (
+                        {(props) => (
                           <ProfileScreen
-                            setToken={setToken}
+                            {...props}
                             userId={userId}
                             userToken={userToken}
+                            setToken={setToken}
                           />
                         )}
                       </Stack.Screen>
