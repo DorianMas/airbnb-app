@@ -73,7 +73,7 @@ export default function App() {
               {() => <SignInScreen setToken={setToken} setId={setId} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUpScreen setToken={setToken} />}
+              {() => <SignUpScreen setToken={setToken} setId={setId} />}
             </Stack.Screen>
           </>
         ) : (
@@ -106,7 +106,7 @@ export default function App() {
                           headerTitleStyle: { color: "white" },
                         }}
                       >
-                        {(props) => <HomeScreen {...props} />}
+                        {(props) => <HomeScreen {...props} setId={setId} />}
                       </Stack.Screen>
 
                       <Stack.Screen name="Room" component={RoomScreen} />

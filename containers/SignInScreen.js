@@ -43,11 +43,11 @@ export default function SignInScreen({ setToken, setId }) {
         //Enregistrer l'id pour l'utiliser sur la page Profile
         setId(response.data.id);
 
-        const userId = JSON.stringify(response.data.id);
+        // const userId = JSON.stringify(response.data.id);
 
         // console.log(response.data.id);
 
-        await AsyncStorage.setItem("userId", userId);
+        // await AsyncStorage.setItem("userId", userId);
       } else {
         setError("Please fill all fields");
       }

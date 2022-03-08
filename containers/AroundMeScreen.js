@@ -33,7 +33,7 @@ const AroundMe = ({ navigation }) => {
     getPermission();
   }, []);
   return isLoading === true ? (
-    <ActivityIndicator />
+    <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
     <MapView
       style={{ width: "100%", height: "100%" }}

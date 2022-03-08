@@ -18,7 +18,7 @@ import {
 
 import { Entypo } from "@expo/vector-icons";
 
-const HomeScreen = (props) => {
+const HomeScreen = ({ setId }) => {
   const [data, setData] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -55,12 +55,27 @@ const HomeScreen = (props) => {
   };
 
   const navigation = useNavigation();
+  const removeUserId = async () => {
+    try {
+      await AsyncStorage.removeItem("userId", userId);
+      setToken(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return isLoading === true ? (
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
     <View style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
+      <Button
+        onPress={() => {
+          setId(null);
+        }}
+        title={"Remove"}
+      />
+      <Button title="Log Out" onPress={removeUserId} />
 
       <FlatList
         style={styles.offersList}

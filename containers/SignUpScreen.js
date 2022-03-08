@@ -14,8 +14,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useNavigation } from "@react-navigation/core";
 
 import axios from "axios";
+import { setDisabled } from "react-native/Libraries/LogBox/Data/LogBoxData";
 
-export default function SignUpScreen({ setToken }) {
+export default function SignUpScreen({ setToken, setId }) {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -43,8 +44,8 @@ export default function SignUpScreen({ setToken }) {
           );
           console.log(response.data);
           setToken(response.data.token);
-
-          const userId = JSON.stringify(response.data.id);
+          setId(response.data.id);
+          // const userId = JSON.stringify(response.data.id);
 
           // console.log(response.data.id);
 
