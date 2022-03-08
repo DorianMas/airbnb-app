@@ -41,6 +41,9 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
         );
         setIsLoading(false);
         setUser(response.data);
+        setEmail(response.data.email);
+        setUsername(response.data.username);
+        setDescription(response.data.description);
         console.log(response.data);
       } catch (error) {
         console.log(error.message);
@@ -119,6 +122,29 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
     }
   };
 
+  const updateInfos = async () => {
+    setIsLoading(true);
+
+    const response = await axios.put(
+      "https://express-airbnb-api.herokuapp.com/user/update",
+      {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      },
+      {
+        email: email,
+        description: description,
+        username: username,
+      }
+    );
+    if (response.data) {
+      setIsLoading(false);
+      alert("Informations mises à jour !");
+      console.log(response.data);
+    }
+  };
+
   const sendPicture = async () => {
     setIsLoading(true);
 
@@ -159,7 +185,7 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
       console.log(error.message);
       console.log(error.response.data);
       console.log(error.response.status);
-      console.log(userToken);
+      console.log("UserToken => ", userToken);
     }
   };
 
@@ -206,6 +232,9 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
       </View>
       <TouchableOpacity>
         <Button title="Envoi d'une photo au backend" onPress={sendPicture} />
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Button title="Actualiser les informations" onPress={updateInfos} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.logOutContainer} onPress={removeUserId}>
         <Text style={styles.logOutText}>Log out</Text>
