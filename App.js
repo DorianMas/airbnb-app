@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Image, StyleSheet } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -101,12 +103,28 @@ export default function App() {
                       <Stack.Screen
                         name="Home"
                         options={{
-                          title: "My App",
-                          headerStyle: { backgroundColor: "red" },
+                          title: "",
+                          headerStyle: { backgroundColor: "white" },
                           headerTitleStyle: { color: "white" },
+                          headerTitle: () => (
+                            <Image
+                              style={styles.headerLogo}
+                              source={require("./assets/sigle-airbnb.jpg")}
+                              resizeMode="contain"
+                            />
+                          ),
                         }}
                       >
-                        {(props) => <HomeScreen {...props} setId={setId} />}
+                        {(props) => (
+                          <HomeScreen
+                            {...props}
+                            setId={setId}
+                            userId={userId}
+                            userToken={userToken}
+                            setToken={setToken}
+                            setUserId={setUserId}
+                          />
+                        )}
                       </Stack.Screen>
 
                       <Stack.Screen name="Room" component={RoomScreen} />
@@ -127,11 +145,23 @@ export default function App() {
                       <Stack.Screen
                         name="AroundMe"
                         options={{
-                          title: "Around me",
+                          title: "",
+                          headerTitle: () => (
+                            <Image
+                              style={styles.headerLogo}
+                              source={require("./assets/sigle-airbnb.jpg")}
+                              resizeMode="contain"
+                            />
+                          ),
                         }}
                       >
                         {(props) => (
-                          <AroundMeScreen {...props} setToken={setToken} />
+                          <AroundMeScreen
+                            {...props}
+                            setToken={setToken}
+                            userToken={userToken}
+                            setUserId={setUserId}
+                          />
                         )}
                       </Stack.Screen>
                     </Stack.Navigator>
@@ -150,8 +180,15 @@ export default function App() {
                       <Stack.Screen
                         name="ProfileTest"
                         options={{
-                          title: "Profile",
+                          title: "",
                           tabBarLabel: "Profile",
+                          headerTitle: () => (
+                            <Image
+                              style={styles.headerLogo}
+                              source={require("./assets/sigle-airbnb.jpg")}
+                              resizeMode="contain"
+                            />
+                          ),
                         }}
                       >
                         {(props) => (
@@ -160,6 +197,7 @@ export default function App() {
                             userId={userId}
                             userToken={userToken}
                             setToken={setToken}
+                            setUserId={setUserId}
                           />
                         )}
                       </Stack.Screen>
@@ -174,3 +212,7 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  headerLogo: { width: 50, height: 50 },
+});

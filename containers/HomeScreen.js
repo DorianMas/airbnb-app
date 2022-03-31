@@ -18,7 +18,7 @@ import {
 
 import { Entypo } from "@expo/vector-icons";
 
-const HomeScreen = ({ setId }) => {
+const HomeScreen = (props) => {
   const [data, setData] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -54,28 +54,28 @@ const HomeScreen = ({ setId }) => {
     return starsArrays;
   };
 
-  const navigation = useNavigation();
-  const removeUserId = async () => {
-    try {
-      await AsyncStorage.removeItem("userId", userId);
-      setToken(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const navigation = useNavigation();
+  // const removeUserId = async () => {
+  //   try {
+  //     await AsyncStorage.removeItem("userId", userId);
+  //     setToken(null);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return isLoading === true ? (
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
     <View style={styles.container}>
-      <Image source={require("../assets/logo.png")} style={styles.logo} />
-      <Button
+      {/* <Image source={require("../assets/logo.png")} style={styles.logo} /> */}
+      {/* <Button
         onPress={() => {
           setId(null);
         }}
         title={"Remove"}
       />
-      <Button title="Log Out" onPress={removeUserId} />
+      <Button title="Log Out" onPress={removeUserId} /> */}
 
       <FlatList
         style={styles.offersList}
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 5,
   },
-  offersList: { borderTopColor: "grey", borderTopWidth: 1 },
+  // offersList: { borderTopColor: "grey", borderTopWidth: 1 },
   title: {
     paddingVertical: 10,
     fontWeight: "bold",

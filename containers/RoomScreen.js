@@ -17,6 +17,7 @@ import {
 
 import { Entypo } from "@expo/vector-icons";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { SwiperFlatList } from "react-native-swiper-flatlist";
 
 const RoomScreen = ({ route }) => {
   console.log("Objet =>", route);
@@ -33,6 +34,7 @@ const RoomScreen = ({ route }) => {
         );
         setData(response.data);
         console.log(response.data);
+
         setIsLoading(false);
       } catch (error) {
         console.log(error.response.status);
@@ -57,6 +59,7 @@ const RoomScreen = ({ route }) => {
     }
     return starsArrays;
   };
+  const { width } = Dimensions.get("window");
 
   // Création des coordonnées de la Map
   // const markers = [
@@ -73,26 +76,42 @@ const RoomScreen = ({ route }) => {
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
     <View style={styles.offerContainer}>
-      <Image style={styles.illustration} source={{ uri: data.photos[0].url }} />
-      <Text style={styles.price}>{data.price} €</Text>
-      <View style={styles.offerDetails}>
-        <View style={styles.offerDetailsLeft}>
-          <Text numberOfLines={1} style={styles.title}>
-            {data.title}
-          </Text>
-          <View style={styles.reviewsContainer}>
-            <View style={styles.row}>{generateStars(data.ratingValue)}</View>
-            <Text>{data.reviews} reviews</Text>
+      <SwiperFlatList
+        autoplay
+        autoplayDelay={5}
+        autoplayLoop
+        index={0}
+        showPagination
+        data={data.photos}
+        renderItem={({ item }) => (
+          <Image
+            source={{ uri: item.url }}
+            style={{ height: "100%", flex: 1, width: width }}
+          />
+        )}
+      />
+
+      <View style={styles.offerDetailsContainer}>
+        <Text style={styles.price}>{data.price} €</Text>
+        <View style={styles.offerDetails}>
+          <View style={styles.offerDetailsLeft}>
+            <Text numberOfLines={1} style={styles.title}>
+              {data.title}
+            </Text>
+            <View style={styles.reviewsContainer}>
+              <View style={styles.row}>{generateStars(data.ratingValue)}</View>
+              <Text>{data.reviews} reviews</Text>
+            </View>
           </View>
+          <Image
+            style={styles.avatar}
+            source={{ uri: data.user.account.photo.url }}
+          />
         </View>
-        <Image
-          style={styles.avatar}
-          source={{ uri: data.user.account.photo.url }}
-        />
+        <Text style={styles.description} numberOfLines={3}>
+          {data.description}
+        </Text>
       </View>
-      <Text style={styles.description} numberOfLines={3}>
-        {data.description}
-      </Text>
       <MapView
         // La MapView doit obligatoirement avoir des dimensions
         style={{ flex: 1 }}
@@ -124,9 +143,8 @@ const styles = StyleSheet.create({
   illustration: {
     width: Dimensions.get("window").width,
     height: 200,
-    marginTop: 5,
   },
-
+  offerDetailsContainer: { marginHorizontal: 5 },
   price: {
     backgroundColor: "black",
     color: "white",

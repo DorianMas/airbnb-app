@@ -12,12 +12,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Person from "../assets/person-icon.png";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function ProfileScreen({ userId, userToken, setToken }) {
+export default function ProfileScreen({
+  userId,
+  userToken,
+  setToken,
+  setUserId,
+}) {
   const [user, setUser] = useState({});
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -44,6 +49,7 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
         setEmail(response.data.email);
         setUsername(response.data.username);
         setDescription(response.data.description);
+        setSelectedPicture(response.data.photo.url);
         console.log(response.data);
       } catch (error) {
         console.log(error.message);
@@ -82,8 +88,9 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
 
   const removeUserId = async () => {
     try {
-      await AsyncStorage.removeItem("userId", userId);
+      // await AsyncStorage.removeItem("userId");
       setToken(null);
+      setUserId(null);
     } catch (error) {
       console.log(error);
     }
@@ -122,33 +129,67 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
     }
   };
 
-  const updateInfos = async () => {
-    setIsLoading(true);
+  // const sendPicture = async () => {
+  //   setIsLoading(true);
 
-    const response = await axios.put(
-      "https://express-airbnb-api.herokuapp.com/user/update",
-      {
-        headers: {
-          Authorization: "Bearer " + userToken,
-        },
-      },
-      {
-        email: email,
-        description: description,
-        username: username,
-      }
-    );
-    if (response.data) {
-      setIsLoading(false);
-      alert("Informations mises à jour !");
-      console.log(response.data);
-    }
-  };
+  //   const tab = selectedPicture.split(".");
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("photo", {
+  //       uri: selectedPicture,
+  //       name: `my-pic.${tab[1]}`,
+  //       type: `image/${tab[1]}`,
+  //     });
 
-  const sendPicture = async () => {
-    setIsLoading(true);
+  //     const response = await axios.put(
+  //       "https://express-airbnb-api.herokuapp.com/user/upload_picture",
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + userToken,
+  //         },
+  //       }
+  //     );
+  //     if (response.data) {
+  //       setIsLoading(false);
+  //       alert("Photo Envoyée !");
+  //       console.log(response.data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     console.log(error.message);
+  //     console.log(error.response.data);
+  //     console.log(error.response.status);
+  //     console.log("UserToken => ", userToken);
+  //   }
+  // };
 
+  // const updateInfos = async () => {
+  //   setIsLoading(true);
+
+  //   const response = await axios.put(
+  //     "https://express-airbnb-api.herokuapp.com/user/update",
+  //     {
+  //       email: email,
+  //       description: description,
+  //       username: username,
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: "Bearer " + userToken,
+  //       },
+  //     }
+  //   );
+  //   if (response.data) {
+  //     setIsLoading(false);
+  //     alert("Informations mises à jour !");
+  //     console.log(response.data);
+  //   }
+  // };
+
+  const updateProfile = async () => {
     const tab = selectedPicture.split(".");
+
     try {
       const formData = new FormData();
       formData.append("photo", {
@@ -156,29 +197,43 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
         name: `my-pic.${tab[1]}`,
         type: `image/${tab[1]}`,
       });
-      // const response = await axios.post(
-      //   "https://upload-file-server-with-js.herokuapp.com/upload",
-      //   formData
-      // );
-      // if (response.data) {
-      //   setIsLoading(false);
-      //   alert("Photo Envoyée !");
-      //   console.log(response.data);
-      // }
 
-      const response = await axios.put(
-        "https://express-airbnb-api.herokuapp.com/user/upload_picture",
-        {
-          headers: {
-            Authorization: "Bearer " + userToken,
+      if (email || description || username) {
+        const response = await axios.put(
+          "https://express-airbnb-api.herokuapp.com/user/update",
+          {
+            email: email,
+            description: description,
+            username: username,
           },
-        },
-        formData
-      );
-      if (response.data) {
-        setIsLoading(false);
-        alert("Photo Envoyée !");
-        console.log(response.data);
+          {
+            headers: {
+              Authorization: "Bearer " + userToken,
+            },
+          }
+        );
+        if (response.data) {
+          setIsLoading(false);
+          alert("Informations mises à jour !");
+          console.log(response.data);
+        }
+      }
+
+      if (formData) {
+        const response = await axios.put(
+          "https://express-airbnb-api.herokuapp.com/user/upload_picture",
+          formData,
+          {
+            headers: {
+              Authorization: "Bearer " + userToken,
+            },
+          }
+        );
+        if (response.data) {
+          setIsLoading(false);
+          // alert("Photo Envoyée !");
+          console.log(response.data);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -192,54 +247,57 @@ export default function ProfileScreen({ userId, userToken, setToken }) {
   return isLoading ? (
     <ActivityIndicator size="large" color="red" style={{ marginTop: 100 }} />
   ) : (
-    <View style={styles.container}>
-      <View style={styles.headContainer}>
-        <View style={styles.pictureContainer}>
-          {selectedPicture ? (
-            <Image source={{ uri: selectedPicture }} style={styles.picture} />
-          ) : (
-            <Ionicons name="person" size={80} color="grey" />
-          )}
+    <KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <View style={styles.headContainer}>
+          <View style={styles.pictureContainer}>
+            {selectedPicture ? (
+              <Image source={{ uri: selectedPicture }} style={styles.picture} />
+            ) : (
+              <Ionicons name="person" size={80} color="grey" />
+            )}
+          </View>
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={getPermissionAndTakePicture}>
+              <MaterialIcons name="photo-camera" size={30} color="grey" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={getPermissionAndGetPicture}>
+              <MaterialIcons name="photo-library" size={30} color="grey" />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity onPress={getPermissionAndTakePicture}>
-            <MaterialIcons name="photo-camera" size={30} color="grey" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={getPermissionAndGetPicture}>
-            <MaterialIcons name="photo-library" size={30} color="grey" />
-          </TouchableOpacity>
+        <View style={styles.updateInfosContainer}>
+          <TextInput
+            value={email}
+            style={styles.emailInput}
+            placeholder="email"
+            onChangeText={(text) => setEmail(text)}
+          />
+          <TextInput
+            value={username}
+            style={styles.usernameInput}
+            placeholder="username"
+            onChangeText={(text) => setUsername(text)}
+          />
+          <TextInput
+            value={description}
+            style={styles.descriptionInput}
+            placeholder="description"
+            onChangeText={(text) => setDescription(text)}
+          />
         </View>
+
+        <TouchableOpacity
+          style={styles.logOutContainer}
+          onPress={updateProfile}
+        >
+          <Text style={styles.logOutText}>Update</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.logOutContainer} onPress={removeUserId}>
+          <Text style={styles.logOutText}>Log out</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.updateInfosContainer}>
-        <TextInput
-          value={email}
-          style={styles.emailInput}
-          placeholder="email"
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          value={username}
-          style={styles.usernameInput}
-          placeholder="username"
-          onChangeText={(text) => setUsername(text)}
-        />
-        <TextInput
-          value={description}
-          style={styles.descriptionInput}
-          placeholder="description"
-          onChangeText={(text) => setDescription(text)}
-        />
-      </View>
-      <TouchableOpacity>
-        <Button title="Envoi d'une photo au backend" onPress={sendPicture} />
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <Button title="Actualiser les informations" onPress={updateInfos} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.logOutContainer} onPress={removeUserId}>
-        <Text style={styles.logOutText}>Log out</Text>
-      </TouchableOpacity>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -258,7 +316,7 @@ const styles = StyleSheet.create({
   pictureContainer: {
     borderRadius: 80,
     borderColor: "red",
-    borderWidth: 2,
+    borderWidth: 1,
     padding: 10,
     marginRight: 5,
     marginLeft: 50,
@@ -276,24 +334,25 @@ const styles = StyleSheet.create({
   },
   emailInput: {
     borderBottomColor: "red",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     height: 40,
     width: 250,
     marginTop: 10,
   },
   usernameInput: {
     borderBottomColor: "red",
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     height: 40,
     width: 250,
     marginTop: 20,
   },
   descriptionInput: {
     borderColor: "red",
-    borderWidth: 2,
+    borderWidth: 1,
     height: 100,
     width: 250,
     marginTop: 30,
+    marginBottom: 10,
     paddingHorizontal: 5,
     paddingBottom: 55,
     alignItems: "flex-start",
@@ -303,7 +362,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 50,
     padding: 10,
-    width: "60%",
+    width: "70%",
+    marginVertical: 10,
   },
-  logOutText: { color: "grey", fontSize: 22, textAlign: "center" },
+  logOutText: { color: "grey", fontSize: 18, textAlign: "center" },
 });
